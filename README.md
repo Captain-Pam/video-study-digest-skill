@@ -14,6 +14,24 @@ This skill is for agents that need to help users learn from video content instea
 
 ## Install
 
+Recommended: install with Codex's skill installer from the GitHub repo path:
+
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo Captain-Pam/video-study-digest-skill \
+  --path skills/video-study-digest
+```
+
+Or ask Codex:
+
+```text
+Install the skill from https://github.com/Captain-Pam/video-study-digest-skill/tree/main/skills/video-study-digest
+```
+
+After installation, restart Codex to pick up the new skill.
+
+Manual install:
+
 Clone this repository and symlink or copy the skill folder into your agent's skills directory:
 
 ```bash
