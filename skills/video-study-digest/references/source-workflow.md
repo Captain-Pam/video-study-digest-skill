@@ -34,6 +34,24 @@ python <skill-dir>/scripts/video_digest_pipeline.py <url-or-transcript> --output
 
 It writes source context when available, transcript Markdown/JSON, and `run_report.json`/`run_report.md`.
 
+## Pipeline Output Files
+
+The pipeline writes result files under the requested `--output-dir`:
+
+| File | When it appears | How to use it |
+| --- | --- | --- |
+| `source_context.json` | URL or `yt-dlp` info JSON input when metadata extraction works | Machine-readable metadata: title, uploader, duration, chapters, description, tags, thumbnails, and available captions. Use for triage and source orientation only. |
+| `source_context.md` | Same as `source_context.json` | Human-readable metadata summary. Do not cite it as spoken transcript evidence. |
+| `transcript.md` | Local transcript/subtitle input, or public captions found by `yt-dlp` | Primary human-readable transcript evidence for study notes. Cite timestamps from this file when available. |
+| `transcript.json` | Same as `transcript.md` | Machine-readable transcript segments for chunking, filtering, or downstream processing. |
+| `transcript_whisper.vtt` | Audio transcription fallback after `--transcribe-if-needed` | Timestamped faster-whisper transcript. Treat as generated transcript and state that limitation when useful. |
+| `transcript_whisper.md` | Same transcription fallback | Human-readable faster-whisper transcript. |
+| `transcript_whisper.json` | Same transcription fallback | Machine-readable transcription segments and metadata. |
+| `run_report.json` | Every pipeline run | Machine-readable status, transcript method, cache root, output paths, warnings, and errors. |
+| `run_report.md` | Every pipeline run | Human-readable run summary and output index. |
+
+The pipeline prepares source material; it does not generate final learning notes. Save final notes separately, commonly as `study_notes.md`, when the user asks for a file artifact.
+
 ## Normalizing Captions
 
 Run the bundled script when a file or URL needs normalization:

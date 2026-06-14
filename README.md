@@ -72,6 +72,24 @@ If captions are missing and local transcription is acceptable:
 python skills/video-study-digest/scripts/video_digest_pipeline.py "https://www.youtube.com/watch?v=VIDEO_ID" --output-dir outputs/video --transcribe-if-needed
 ```
 
+## Output Files
+
+The one-command pipeline writes results to the directory passed with `--output-dir`.
+
+| File | When it appears | Purpose |
+| --- | --- | --- |
+| `source_context.json` | URL or `yt-dlp` info JSON input when metadata extraction works | Machine-readable title, uploader, duration, chapters, description, tags, thumbnails, and available captions. Use for triage, not transcript evidence. |
+| `source_context.md` | Same as `source_context.json` | Human-readable source metadata for quick review. |
+| `transcript.md` | Local transcript/subtitle input, or URL captions found by `yt-dlp` | Normalized timestamped transcript for reading, summarizing, and citing. |
+| `transcript.json` | Same as `transcript.md` | Machine-readable transcript segments for downstream processing. |
+| `transcript_whisper.vtt` | URL transcription fallback with `--transcribe-if-needed` | Timestamped transcript generated from audio by faster-whisper. |
+| `transcript_whisper.md` | Same transcription fallback | Human-readable transcription output. |
+| `transcript_whisper.json` | Same transcription fallback | Machine-readable transcription segments and metadata. |
+| `run_report.json` | Every pipeline run | Machine-readable status, transcript method, cache root, output paths, warnings, and errors. |
+| `run_report.md` | Every pipeline run | Human-readable run summary and output index. |
+
+The pipeline does not write final study notes by itself. After preparing source context and transcript files, use the skill to produce the learning output, commonly saved as `study_notes.md` when you want a file artifact.
+
 For URL metadata context:
 
 ```bash

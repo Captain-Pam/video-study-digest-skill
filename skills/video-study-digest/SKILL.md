@@ -12,7 +12,7 @@ Create source-grounded study notes from video transcripts. Prefer timestamped ev
 ## Workflow
 
 1. Identify the source type: pasted transcript, local subtitle file, video URL, local media file, or rough notes.
-2. For video URLs, read `references/source-workflow.md` and prefer `scripts/video_digest_pipeline.py` when practical to prepare source context and transcript artifacts in one run.
+2. For video URLs or questions about result files, read `references/source-workflow.md` and prefer `scripts/video_digest_pipeline.py` when practical to prepare source context and transcript artifacts in one run.
 3. If the environment is uncertain, run `scripts/doctor.py` before long downloads or transcription.
 4. If the transcript is not already clean and timestamped, normalize it with `scripts/prepare_transcript.py` when practical.
 5. If captions are unavailable and the user approves audio transcription, use `scripts/transcribe_audio.py` with `--cache-root` or the `VIDEO_STUDY_CACHE_ROOT` environment variable.
