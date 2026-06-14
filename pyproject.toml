@@ -1,0 +1,11 @@
+[project]
+name = "video-study-digest-skill"
+version = "0.1.0"
+description = "Agent skill for turning video transcripts into source-grounded study notes."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = ["codex", "skills", "video", "transcript", "yt-dlp", "study-notes"]
+
+[tool.video-study-digest]
+skill_path = "skills/video-study-digest"

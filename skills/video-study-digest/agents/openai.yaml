@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Study Digest"
+  short_description: "Turn videos into study notes"
+  default_prompt: "Use $video-study-digest to turn this video transcript into concise study notes."
