@@ -26,6 +26,14 @@ python <skill-dir>/scripts/extract_video_context.py info.json --output source_co
 
 Use source context for title, uploader, duration, chapter hints, description, tags, and available caption languages. Treat it as metadata, not as proof of what was said. The transcript remains the primary evidence for claims about video content.
 
+For the usual URL or local transcript workflow, prefer the one-command pipeline:
+
+```bash
+python <skill-dir>/scripts/video_digest_pipeline.py <url-or-transcript> --output-dir video-study-output
+```
+
+It writes source context when available, transcript Markdown/JSON, and `run_report.json`/`run_report.md`.
+
 ## Normalizing Captions
 
 Run the bundled script when a file or URL needs normalization:
@@ -46,11 +54,15 @@ For URL input, the script uses `yt-dlp` when available and downloads captions on
 
 - For a local video/audio file, use a locally available transcription tool such as Whisper or faster-whisper if the environment supports it.
 - For a public URL with no captions, use `scripts/transcribe_audio.py` only when the user wants transcription and accepts the audio download/cache step.
-- Default media cache root: `F:\cc_project\CodexMediaCache`.
+- Cache root priority:
+  1. `--cache-root`
+  2. `VIDEO_STUDY_CACHE_ROOT`
+  3. existing `F:\cc_project\CodexMediaCache` on Windows
+  4. platform user cache directory
 - Cache layout:
 
 ```text
-F:\cc_project\CodexMediaCache\
+<cache-root>\
   audio\
   metadata\
   models\
@@ -77,11 +89,17 @@ python -c "import faster_whisper; print('faster-whisper available')"
 Audio transcription command:
 
 ```bash
-python <skill-dir>/scripts/transcribe_audio.py <url-or-local-media> --cache-root F:\cc_project\CodexMediaCache --model-size base
+python <skill-dir>/scripts/transcribe_audio.py <url-or-local-media> --cache-root <cache-root> --model-size base
 ```
 
 This downloads audio only, not the full video, then writes `.vtt`, `.json`, and `.md` transcript outputs under `transcripts\`.
 The faster-whisper model files are downloaded under `models\huggingface\` inside the same cache root.
+
+Before diagnosing user environment issues, run:
+
+```bash
+python <skill-dir>/scripts/doctor.py
+```
 
 ## Chunking Long Transcripts
 

@@ -8,6 +8,8 @@ This skill is for agents that need to help users learn from video content instea
 
 - Normalizes `.srt`, `.vtt`, and timestamped `.txt` transcripts.
 - Extracts source context from video URLs or `yt-dlp` info JSON.
+- Runs a one-command preparation pipeline for source context plus transcript artifacts.
+- Checks local dependencies and cache settings with a doctor script.
 - Keeps metadata separate from transcript-backed claims.
 - Produces Chinese study notes by default, preserving important source terms.
 - Supports compact, default, and deep study outputs.
@@ -52,6 +54,24 @@ Copy-Item -Recurse .\skills\video-study-digest $env:USERPROFILE\.codex\skills\vi
 Use $video-study-digest to turn this video transcript into concise study notes.
 ```
 
+Quick environment check:
+
+```bash
+python skills/video-study-digest/scripts/doctor.py
+```
+
+Recommended one-command source preparation:
+
+```bash
+python skills/video-study-digest/scripts/video_digest_pipeline.py "https://www.youtube.com/watch?v=VIDEO_ID" --output-dir outputs/video
+```
+
+If captions are missing and local transcription is acceptable:
+
+```bash
+python skills/video-study-digest/scripts/video_digest_pipeline.py "https://www.youtube.com/watch?v=VIDEO_ID" --output-dir outputs/video --transcribe-if-needed
+```
+
 For URL metadata context:
 
 ```bash
@@ -70,7 +90,27 @@ For videos without public captions, audio-only transcription can use the default
 python skills/video-study-digest/scripts/transcribe_audio.py "https://www.youtube.com/watch?v=VIDEO_ID" --cache-root F:\cc_project\CodexMediaCache --model-size base
 ```
 
-The cache stores audio, transcripts, temporary files, and faster-whisper model files under `F:\cc_project\CodexMediaCache` by default.
+The cache stores audio, transcripts, temporary files, and faster-whisper model files under the configured cache root.
+
+For cross-platform use, set `VIDEO_STUDY_CACHE_ROOT` or pass `--cache-root`:
+
+```bash
+export VIDEO_STUDY_CACHE_ROOT="$HOME/.cache/video-study-digest"
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:VIDEO_STUDY_CACHE_ROOT = "F:\cc_project\CodexMediaCache"
+```
+
+To persist it for future Codex sessions on Windows:
+
+```powershell
+[Environment]::SetEnvironmentVariable("VIDEO_STUDY_CACHE_ROOT", "F:\cc_project\CodexMediaCache", "User")
+```
+
+On Windows, if `F:\cc_project\CodexMediaCache` already exists, the scripts use it as the default non-C-drive cache. Otherwise they fall back to the platform user cache directory.
 
 ## Dependencies
 

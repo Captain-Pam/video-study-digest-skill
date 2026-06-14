@@ -13,8 +13,11 @@ import sys
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-DEFAULT_CACHE_ROOT = Path(r"F:\cc_project\CodexMediaCache")
+from cache_paths import default_cache_root
 
 
 def is_url(value: str) -> bool:
@@ -209,7 +212,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Download audio-only media when needed and transcribe it with faster-whisper."
     )
     parser.add_argument("source", help="Video/audio URL or local media file.")
-    parser.add_argument("--cache-root", type=Path, default=DEFAULT_CACHE_ROOT)
+    parser.add_argument("--cache-root", type=Path, default=default_cache_root())
     parser.add_argument("--model-size", default="base", help="faster-whisper model size. Default: base.")
     parser.add_argument("--language", help="Optional language hint such as en, zh, or ja.")
     parser.add_argument("--reuse", action="store_true", help="Reuse existing transcript outputs when present.")

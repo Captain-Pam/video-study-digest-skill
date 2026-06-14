@@ -21,10 +21,43 @@ def load_module():
 
 
 class TranscribeAudioTests(unittest.TestCase):
-    def test_default_cache_root_is_f_drive(self):
+    def test_default_cache_root_can_come_from_environment(self):
         module = load_module()
-        args = module.build_parser().parse_args(["sample.mp3"])
-        self.assertEqual(args.cache_root, Path(r"F:\cc_project\CodexMediaCache"))
+        cache_root = module.default_cache_root(
+            env={"VIDEO_STUDY_CACHE_ROOT": r"D:\media-cache"},
+            os_name="nt",
+            home=Path(r"C:\Users\alice"),
+        )
+        self.assertEqual(cache_root, Path(r"D:\media-cache"))
+
+    def test_default_cache_root_is_cross_platform_when_env_is_missing(self):
+        module = load_module()
+        cache_root = module.default_cache_root(
+            env={},
+            os_name="posix",
+            home=Path("/home/alice"),
+        )
+        self.assertEqual(cache_root, Path("/home/alice/.cache/video-study-digest"))
+
+    def test_default_cache_root_uses_existing_f_drive_cache_on_windows(self):
+        module = load_module()
+        cache_root = module.default_cache_root(
+            env={},
+            os_name="nt",
+            home=Path(r"C:\Users\alice"),
+            path_exists=lambda path: str(path) == r"F:\cc_project\CodexMediaCache",
+        )
+        self.assertEqual(cache_root, Path(r"F:\cc_project\CodexMediaCache"))
+
+    def test_parser_uses_dynamic_default_cache_root(self):
+        module = load_module()
+        original_default = module.default_cache_root
+        try:
+            module.default_cache_root = lambda: Path("/tmp/video-study")
+            args = module.build_parser().parse_args(["sample.mp3"])
+        finally:
+            module.default_cache_root = original_default
+        self.assertEqual(args.cache_root, Path("/tmp/video-study"))
 
     def test_ensure_cache_layout_creates_expected_dirs(self):
         module = load_module()
